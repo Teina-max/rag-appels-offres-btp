@@ -1,0 +1,15 @@
+{
+  "name": "rag-ao-btp-ingest",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "inspect": "bun run src/inspect.ts"
+  },
+  "dependencies": {
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
+  }
+}
