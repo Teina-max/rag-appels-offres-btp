@@ -48,3 +48,56 @@ export async function insertChunks(documentId: string, projectId: string, chunks
       values (${documentId}, ${projectId}, ${c.articleCode}, ${c.page}, ${c.content}, ${c.tokenCount}, ${vec}::vector)`;
   }
 }
+
+export async function getProjectIdByHint(hint: string): Promise<string> {
+  const rows = await db`
+    select id from projects where lower(name) like ${"%" + hint.toLowerCase() + "%"}
+    order by created_at limit 1`;
+  if (!rows.length) throw new Error(`No project matching "${hint}"`);
+  return rows[0]!.id;
+}
+
+export interface Match {
+  content: string;
+  articleCode: string | null;
+  page: number;
+  similarity: number;
+  lot: string | null;
+  pieceType: string;
+  fileName: string;
+}
+
+/**
+ * Retrieve top chunks by cosine similarity, scoped to a project.
+ * When `lot` is set, over-fetch then keep only that lot + shared pieces
+ * (lot is null) — a hard scope filter, not a soft prompt hint.
+ */
+export async function matchChunks(
+  embedding: number[],
+  count: number,
+  projectId: string,
+  lot?: string | null,
+): Promise<Match[]> {
+  const vec = `[${embedding.join(",")}]`;
+  const limit = lot ? count * 6 : count;
+  const rows = await db`
+    select c.content, c.article_code, c.page,
+           1 - (c.embedding <=> ${vec}::vector) as similarity,
+           d.lot, d.piece_type, d.file_name
+    from chunks c
+    join documents d on d.id = c.document_id
+    where c.project_id = ${projectId}
+    order by c.embedding <=> ${vec}::vector
+    limit ${limit}`;
+  const matches: Match[] = rows.map((r) => ({
+    content: r.content,
+    articleCode: r.article_code,
+    page: r.page,
+    similarity: Number(r.similarity),
+    lot: r.lot,
+    pieceType: r.piece_type,
+    fileName: r.file_name,
+  }));
+  if (!lot) return matches;
+  return matches.filter((m) => m.lot === lot || m.lot === null).slice(0, count);
+}

@@ -3,7 +3,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "inspect": "bun run src/inspect.ts"
+    "inspect": "bun run src/inspect.ts",
+    "ingest": "bun run src/run.ts",
+    "ask": "bun run src/ask.ts"
   },
   "dependencies": {
     "postgres": "^3.4.9"

@@ -3,13 +3,10 @@
 // Idempotent per project (wipe + re-insert). Run: bun run ingest
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { loadSecrets } from "./env";
 import { pdfToPages } from "./extract";
 import { chunkPages } from "./chunk";
 import { embedBatch } from "./embed";
 import { db, getOrCreateProject, wipeProject, insertDocument, insertChunks } from "./db";
-
-loadSecrets();
 
 const CORPUS = join(import.meta.dir, "..", "..", "corpus", "raw");
 

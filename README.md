@@ -56,17 +56,28 @@ Building public — avancement :
 - [x] Corpus réel constitué (2 DCE, 8 pièces, 144 pages)
 - [x] Pipeline extraction + sanitize + chunking (371 chunks, 94 % avec code article)
 - [x] Schéma DB (pgvector + HNSW + RPC + RLS)
-- [ ] Embeddings + ingestion en base
-- [ ] Retrieval + Q&A sourcé (grounding strict, citations)
+- [x] Embeddings Voyage + ingestion en base (371 chunks vectorisés)
+- [x] Retrieval + Q&A sourcé (grounding strict, citations, filtre lot, anti-hallucination)
 - [ ] Détection d'incohérences (déterministe + sémantique)
 - [ ] Suite d'évaluation + métriques
 - [ ] UI démo déployée
 
 ## Lancer localement
 
-Prérequis : [Bun](https://bun.sh) et `poppler` (`brew install poppler` pour `pdftotext`).
+Prérequis : [Bun](https://bun.sh), `poppler` (`brew install poppler`), et Docker.
 
 ```bash
-cd ingest
-bun run inspect   # extrait + chunk le corpus, affiche les stats (aucune clé requise)
+# 1. Inspecter l'extraction/chunking (aucune clé requise)
+cd ingest && bun install && bun run inspect
+
+# 2. Base Postgres + pgvector locale (gratuit, sans cloud)
+bash scripts/db-local.sh
+# → renseigner DATABASE_URL + VOYAGE_API_KEY + ANTHROPIC_API_KEY
+#   dans ~/.secrets/rag-ao-btp.env (voir .env.example)
+
+# 3. Ingérer le corpus (embeddings Voyage → pgvector)
+cd ingest && bun run ingest
+
+# 4. Poser une question sourcée
+bun run ask "Quels travaux de plâtrerie sont prévus ?" --project coupvray --lot LOT03
 ```

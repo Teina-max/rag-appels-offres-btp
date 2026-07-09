@@ -27,3 +27,7 @@ export function requireEnv(key: string): string {
   if (!value) throw new Error(`Missing environment variable: ${key}`);
   return value;
 }
+
+// Auto-load on import so modules that read env at import time (e.g. db.ts) work
+// regardless of ES module evaluation order.
+loadSecrets();
