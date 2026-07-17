@@ -15,6 +15,44 @@ Sur un appel d'offres BTP, chaque lot (maçonnerie, plâtrerie, menuiseries, él
    - **Déterministe** — jointure CCTP ↔ DPGF par code d'article (poste chiffré sans prescription, prescription sans poste…).
    - **Sémantique** — rapprochement des énoncés d'interface entre lots (embeddings + qualification LLM) : trou de fourniture, doublon, contradiction.
 
+## Exemple de session réelle
+
+Sorties authentiques du CLI sur le corpus committé (DCE de Coupvray), non retouchées.
+
+**Question dont la réponse est dans le dossier :**
+
+```
+$ bun run ask "Quelles sont les prescriptions pour les cloisons de distribution ?" --project coupvray --lot LOT03
+
+### Points singuliers de mise en œuvre
+- En cas de cloison de grande longueur, un joint de fractionnement devra être
+  ménagé tous les 15 m au plus et obligatoirement au droit des joints du gros-œuvre [3]
+- La liaison avec les huisseries sera réalisée à l'aide de montants d'ossature
+  solidarisés du bâti dormant par vissage ou mise en place d'étriers [3]
+- La fixation par pistoscellement ne devra pas être utilisée sur les supports fragiles [5]
+(…)
+
+— Extraits fournis (retrieval) —
+[1] COUPVRAY-CCTP-LOT-03-Platrerie-…-Indice-B.pdf · LOT03 · p.11 · art.02.01.02 · sim=0.629
+[2] COUPVRAY-CCTP-LOT-03-Platrerie-…-Indice-B.pdf · LOT03 · p.10 · art.2.40    · sim=0.617
+[3] COUPVRAY-CCTP-LOT-03-Platrerie-…-Indice-B.pdf · LOT03 · p.6  · art.25.41   · sim=0.616
+```
+
+**Question dont la réponse n'est pas dans le dossier (anti-hallucination) :**
+
+```
+$ bun run ask "Quelles sont les prescriptions techniques du lot plomberie sanitaire ?" --project coupvray
+
+Je n'ai pas trouvé cette information dans les pièces du dossier.
+
+Les extraits fournis concernent les lots suivants : Lot 00 (Généralités), Lot 01
+(Installations de chantier – Démolition – Maçonnerie), Lot 03 (Plâtrerie – Menuiseries
+intérieures) et Lot 05 (Électricité). Aucun extrait relatif au lot plomberie sanitaire
+n'est présent dans les pièces communiquées.
+```
+
+Chaque référence `[n]` renvoie à un extrait réel du dossier : fichier, lot, page, article, score de similarité.
+
 ## Architecture
 
 ```
@@ -81,3 +119,7 @@ cd ingest && bun run ingest
 # 4. Poser une question sourcée
 bun run ask "Quels travaux de plâtrerie sont prévus ?" --project coupvray --lot LOT03
 ```
+
+---
+
+Projet vitrine de mes missions RAG et automatisation : [portfolio](https://portfolio-n8n.vercel.app/) · [LinkedIn](https://www.linkedin.com/in/teina-automatise)
