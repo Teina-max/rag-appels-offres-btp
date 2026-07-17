@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { AnswerMarkdown } from "@/lib/markdown";
+import { Logo } from "@/components/Logo";
 
 type Source = {
   fileName: string;
@@ -61,7 +62,7 @@ export default function Page() {
   return (
     <div className="shell">
       <header className="site-header">
-        <span className="brand-mark" aria-hidden="true">TT</span>
+        <Logo size={34} />
         <strong>RAG appels d&apos;offres BTP</strong>
         <nav>
           <a href="https://github.com/Teina-max/rag-appels-offres-btp" target="_blank" rel="noopener noreferrer">Code source</a>
