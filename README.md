@@ -2,6 +2,8 @@
 
 > Assistant IA qui **répond de façon sourcée** sur les pièces d'un appel d'offres de travaux, et **détecte les incohérences entre lots** avant la remise d'offre — les « trous dans la raquette » qu'un chiffrage laisse passer.
 
+**Démo live : [rag-ao-btp-demo.vercel.app](https://rag-ao-btp-demo.vercel.app)** — posez vos questions, le système cite ses sources ou refuse de répondre.
+
 Projet de démonstration open-source : un système RAG documentaire *production-grade* sur un vrai corpus de marchés publics, avec grounding strict, citations, et une **suite d'évaluation chiffrée**. Développé en *building public*.
 
 ## Le problème
@@ -99,7 +101,7 @@ Building public — avancement :
 - [ ] Détection d'incohérences (déterministe + sémantique)
 - [ ] Suite d'évaluation + métriques
 - [x] UI démo construite (`demo/`, corpus embarqué, garde-fous, tests)
-- [ ] UI démo déployée
+- [x] UI démo déployée : [rag-ao-btp-demo.vercel.app](https://rag-ao-btp-demo.vercel.app)
 
 ## Lancer localement
 

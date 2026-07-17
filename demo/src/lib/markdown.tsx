@@ -42,7 +42,7 @@ export function AnswerMarkdown({ text }: { text: string }) {
       flushBullets(`ul-${i}`);
       return;
     }
-    const heading = line.match(/^#{2,4}\s+(.*)$/);
+    const heading = line.match(/^#{1,4}\s+(.*)$/);
     if (heading) {
       flushBullets(`ul-${i}`);
       blocks.push(<h3 key={`h-${i}`}>{renderInline(heading[1]!, `h-${i}`)}</h3>);
