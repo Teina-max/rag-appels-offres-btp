@@ -98,6 +98,7 @@ Building public — avancement :
 - [x] Retrieval + Q&A sourcé (grounding strict, citations, filtre lot, anti-hallucination)
 - [ ] Détection d'incohérences (déterministe + sémantique)
 - [ ] Suite d'évaluation + métriques
+- [x] UI démo construite (`demo/`, corpus embarqué, garde-fous, tests)
 - [ ] UI démo déployée
 
 ## Lancer localement
@@ -105,6 +106,10 @@ Building public — avancement :
 Prérequis : [Bun](https://bun.sh), `poppler` (`brew install poppler`), et Docker.
 
 ```bash
+# Option zéro-infra : la démo web (corpus vectorisé committé, aucune base requise)
+cd demo && bun install && bun run dev
+# → il suffit de VOYAGE_API_KEY + ANTHROPIC_API_KEY dans l'environnement
+
 # 1. Inspecter l'extraction/chunking (aucune clé requise)
 cd ingest && bun install && bun run inspect
 
