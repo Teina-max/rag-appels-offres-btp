@@ -138,3 +138,7 @@ a { color: var(--accent); }
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
+
+/* Mode embarqué : la page hôte fournit déjà le titre et le contexte */
+.shell--embed { padding-top: 0.75rem; }
+.shell--embed .chips { margin-top: 0; }
