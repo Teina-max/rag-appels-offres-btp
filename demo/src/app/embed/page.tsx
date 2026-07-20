@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Ask } from "@/components/Ask";
+import { EmbedAutoHeight } from "@/components/EmbedAutoHeight";
 
 // Version sans en-tête ni pied de page, destinée à être embarquée en iframe
 // depuis une page tierce qui porte déjà son propre contexte.
@@ -14,6 +15,7 @@ export default function EmbedPage() {
       <main>
         <Ask />
       </main>
+      <EmbedAutoHeight />
     </div>
   );
 }
