@@ -9,15 +9,20 @@ export function EmbedAutoHeight() {
   useEffect(() => {
     if (window.parent === window) return;
 
+    // On mesure le conteneur de contenu, jamais document/body : ceux-ci s'étirent
+    // à la hauteur de l'iframe, donc les mesurer ferait grandir l'iframe à chaque cycle.
+    const target = document.querySelector<HTMLElement>(".shell");
+    if (!target) return;
+
     const send = () => {
       window.parent.postMessage(
-        { source: "rag-ao-demo", height: document.documentElement.scrollHeight },
+        { source: "rag-ao-demo", height: Math.ceil(target.getBoundingClientRect().height) },
         "*"
       );
     };
 
     const observer = new ResizeObserver(send);
-    observer.observe(document.body);
+    observer.observe(target);
     send();
 
     return () => observer.disconnect();
