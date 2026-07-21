@@ -9,9 +9,9 @@ const data = JSON.parse(
 
 describe("embedded corpus", () => {
   test("ships the full vectorized corpus", () => {
-    expect(data.length).toBe(371);
+    expect(data.length).toBe(66);
     expect(data[0]!.embedding.length).toBe(1024);
-    expect(listProjects().length).toBeGreaterThanOrEqual(2);
+    expect(listProjects().length).toBeGreaterThanOrEqual(3);
   });
 
   test("retrieves a chunk as its own best match", () => {

@@ -3,9 +3,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "RAG appels d'offres BTP | Démo sourcée",
+  title: "RAG appels d'offres, sécurité et gardiennage | Démo sourcée",
   description:
-    "Posez une question sur un vrai dossier de consultation BTP : réponses fondées sur les pièces, citations précises, refus explicite quand l'information n'existe pas."
+    "Posez une question sur un vrai dossier de consultation de gardiennage : réponses fondées sur les pièces, citations précises, refus explicite quand l'information n'existe pas."
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };

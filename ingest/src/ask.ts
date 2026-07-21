@@ -6,14 +6,14 @@ import { askClaude } from "./claude";
 
 const SENTINEL = "Je n'ai pas trouvé cette information dans les pièces du dossier.";
 
-const SYSTEM = `Tu es un assistant d'analyse d'appels d'offres BTP.
+const SYSTEM = `Tu es un assistant d'analyse de dossiers de consultation (appels d'offres).
 Tu réponds UNIQUEMENT à partir des extraits numérotés fournis.
 INTERDICTION d'inventer une valeur, une référence, une quantité ou une prescription qui n'apparaît pas littéralement dans les extraits.
 Cite chaque affirmation avec [n], où n renvoie au numéro de l'extrait utilisé.
 Si l'information n'est pas dans les extraits, réponds exactement : "${SENTINEL}"`;
 
 const args = process.argv.slice(2);
-let projectHint = "coupvray";
+let projectHint = "camp";
 let lot: string | null = null;
 const questionParts: string[] = [];
 for (let i = 0; i < args.length; i++) {
@@ -21,7 +21,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === "--lot") lot = args[++i]!.toUpperCase();
   else questionParts.push(args[i]!);
 }
-const question = questionParts.join(" ") || "Quels travaux de peinture sont prévus ?";
+const question = questionParts.join(" ") || "Quelles qualifications sont exigées pour les agents ?";
 
 const projectId = await getProjectIdByHint(projectHint);
 const embedding = await embedQuery(question);

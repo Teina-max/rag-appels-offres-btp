@@ -102,8 +102,14 @@ a { color: var(--accent); }
 .answer-body h3 { margin: 1rem 0 0.4rem; font-size: 1.02rem; }
 .answer-body p { margin: 0.4rem 0; }
 .answer-body ul { margin: 0.3rem 0 0.6rem; padding-left: 1.2rem; }
+.answer-body ol { margin: 0.3rem 0 0.6rem; padding-left: 1.4rem; }
 .answer-body li { margin-bottom: 0.25rem; }
 .answer-body sup { color: var(--accent); font-weight: 700; }
+.answer-hr { border: none; border-top: 1px solid var(--line); margin: 0.9rem 0; }
+.answer-table-wrap { overflow-x: auto; margin: 0.6rem 0; }
+.answer-table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+.answer-table th, .answer-table td { border: 1px solid var(--line); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+.answer-table th { background: var(--accent-soft); font-weight: 600; }
 
 .sources { margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
 .sources ol { margin: 0.4rem 0 0; padding-left: 1.3rem; }

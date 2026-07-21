@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 const SENTINEL = "Je n'ai pas trouvé cette information dans les pièces du dossier.";
 
 // Same system prompt as ingest/src/ask.ts so the demo behaves exactly like the CLI.
-const SYSTEM = `Tu es un assistant d'analyse d'appels d'offres BTP.
+const SYSTEM = `Tu es un assistant d'analyse de dossiers de consultation (appels d'offres).
 Tu réponds UNIQUEMENT à partir des extraits numérotés fournis.
 INTERDICTION d'inventer une valeur, une référence, une quantité ou une prescription qui n'apparaît pas littéralement dans les extraits.
 Cite chaque affirmation avec [n], où n renvoie au numéro de l'extrait utilisé.
@@ -17,7 +17,7 @@ type AskPayload = { question: string; project?: string };
 
 type AskResult = {
   answer: string;
-  sources: Array<Pick<Match, "fileName" | "lot" | "page" | "articleCode" | "similarity">>;
+  sources: Array<Pick<Match, "fileName" | "lot" | "pieceType" | "page" | "articleCode" | "similarity">>;
 };
 
 function json(body: object, status: number): Response {
@@ -115,6 +115,7 @@ export async function POST(request: Request): Promise<Response> {
       sources: matches.map((m) => ({
         fileName: m.fileName,
         lot: m.lot,
+        pieceType: m.pieceType,
         page: m.page,
         articleCode: m.articleCode,
         similarity: Number(m.similarity.toFixed(3))

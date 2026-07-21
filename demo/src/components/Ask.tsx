@@ -6,6 +6,7 @@ import { AnswerMarkdown } from "@/lib/markdown";
 type Source = {
   fileName: string;
   lot: string | null;
+  pieceType: string;
   page: number | null;
   articleCode: string | null;
   similarity: number;
@@ -14,10 +15,10 @@ type Source = {
 type AskResult = { answer: string; sources: Source[] };
 
 const EXAMPLES = [
-  "Quelles sont les prescriptions pour les cloisons de distribution ?",
-  "Quels essais et vérifications sont exigés pour le lot électricité ?",
-  "Quelles sont les conditions de réception des supports avant peinture ?",
-  "Quelles sont les prescriptions techniques du lot plomberie sanitaire ?"
+  "Quelles qualifications et cartes professionnelles sont exigées pour les agents ?",
+  "Quelles pénalités sont prévues en cas de poste non tenu ou d'absence d'agent ?",
+  "Quels sont les horaires de présence et le régime de vacation demandés ?",
+  "Quelles caractéristiques techniques pour les caméras de vidéosurveillance à installer ?"
 ];
 
 export function Ask() {
@@ -73,7 +74,7 @@ export function Ask() {
           <textarea
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Posez votre question sur le dossier (cloisons, essais électriques, réception des supports...)"
+            placeholder="Posez votre question sur le dossier (qualifications, horaires, pénalités, moyens exigés...)"
             maxLength={300}
             aria-label="Votre question sur le dossier"
             required
@@ -99,7 +100,7 @@ export function Ask() {
             <ol>
               {result.sources.map((s, i) => (
                 <li key={i}>
-                  {s.fileName} · {s.lot ?? "commun"}{s.page ? ` · p.${s.page}` : ""}
+                  {s.fileName} · {s.lot ?? s.pieceType}{s.page ? ` · p.${s.page}` : ""}
                   {s.articleCode ? ` · art.${s.articleCode}` : ""} · sim={s.similarity.toFixed(3)}
                 </li>
               ))}

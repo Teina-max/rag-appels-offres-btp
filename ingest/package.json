@@ -5,7 +5,9 @@
   "scripts": {
     "inspect": "bun run src/inspect.ts",
     "ingest": "bun run src/run.ts",
-    "ask": "bun run src/ask.ts"
+    "ask": "bun run src/ask.ts",
+    "reset": "bun run src/reset.ts",
+    "export": "bun run src/export.ts"
   },
   "dependencies": {
     "postgres": "^3.4.9"

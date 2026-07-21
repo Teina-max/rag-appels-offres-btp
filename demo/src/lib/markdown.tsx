@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 /**
  * Minimal renderer for the constrained markdown Claude produces here
- * (### headings, - bullets, **bold**, [n] citations). Builds React nodes
- * directly: no HTML injection surface.
+ * (### headings, -/1. lists, tables, --- rules, **bold**, [n] citations).
+ * Builds React nodes directly: no HTML injection surface.
  */
 function renderInline(text: string, keyPrefix: string): ReactNode[] {
   const nodes: ReactNode[] = [];
@@ -26,36 +26,88 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
   return nodes;
 }
 
+const isTableRow = (l: string) => /^\|.*\|$/.test(l);
+const isTableSep = (l: string) => /^\|[\s:|-]+\|$/.test(l) && l.includes("-");
+const splitCells = (l: string) => l.replace(/^\||\|$/g, "").split("|").map((c) => c.trim());
+
 export function AnswerMarkdown({ text }: { text: string }) {
   const blocks: ReactNode[] = [];
   let bullets: ReactNode[] = [];
+  let ordered: ReactNode[] = [];
 
   const flushBullets = (key: string) => {
-    if (!bullets.length) return;
-    blocks.push(<ul key={key}>{bullets}</ul>);
-    bullets = [];
+    if (bullets.length) { blocks.push(<ul key={key}>{bullets}</ul>); bullets = []; }
   };
+  const flushOrdered = (key: string) => {
+    if (ordered.length) { blocks.push(<ol key={key}>{ordered}</ol>); ordered = []; }
+  };
+  const flushLists = (key: string) => { flushBullets(`u-${key}`); flushOrdered(`o-${key}`); };
 
-  text.split("\n").forEach((rawLine, i) => {
-    const line = rawLine.trim();
+  const lines = text.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!.trim();
+
     if (!line) {
-      flushBullets(`ul-${i}`);
-      return;
+      flushLists(`${i}`);
+      continue;
     }
+
+    // Table: a header row immediately followed by a |---|---| separator row.
+    if (isTableRow(line) && i + 1 < lines.length && isTableSep(lines[i + 1]!.trim())) {
+      flushLists(`${i}`);
+      const header = splitCells(line);
+      const rows: string[][] = [];
+      let j = i + 2;
+      for (; j < lines.length && isTableRow(lines[j]!.trim()); j++) rows.push(splitCells(lines[j]!.trim()));
+      blocks.push(
+        <div className="answer-table-wrap" key={`tw-${i}`}>
+          <table className="answer-table">
+            <thead>
+              <tr>{header.map((c, k) => <th key={k}>{renderInline(c, `th-${i}-${k}`)}</th>)}</tr>
+            </thead>
+            <tbody>
+              {rows.map((r, ri) => (
+                <tr key={ri}>{r.map((c, k) => <td key={k}>{renderInline(c, `td-${i}-${ri}-${k}`)}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+      i = j - 1;
+      continue;
+    }
+
+    // Horizontal rule (--- / *** / ___).
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line)) {
+      flushLists(`${i}`);
+      blocks.push(<hr key={`hr-${i}`} className="answer-hr" />);
+      continue;
+    }
+
     const heading = line.match(/^#{1,4}\s+(.*)$/);
     if (heading) {
-      flushBullets(`ul-${i}`);
+      flushLists(`${i}`);
       blocks.push(<h3 key={`h-${i}`}>{renderInline(heading[1]!, `h-${i}`)}</h3>);
-      return;
+      continue;
     }
-    if (line.startsWith("- ")) {
-      bullets.push(<li key={`li-${i}`}>{renderInline(line.slice(2), `li-${i}`)}</li>);
-      return;
-    }
-    flushBullets(`ul-${i}`);
-    blocks.push(<p key={`p-${i}`}>{renderInline(line, `p-${i}`)}</p>);
-  });
 
-  flushBullets("ul-end");
+    if (line.startsWith("- ") || line.startsWith("* ")) {
+      flushOrdered(`o-${i}`);
+      bullets.push(<li key={`li-${i}`}>{renderInline(line.slice(2), `li-${i}`)}</li>);
+      continue;
+    }
+
+    const orderedItem = line.match(/^(\d+)\.\s+(.*)$/);
+    if (orderedItem) {
+      flushBullets(`u-${i}`);
+      ordered.push(<li key={`oli-${i}`}>{renderInline(orderedItem[2]!, `oli-${i}`)}</li>);
+      continue;
+    }
+
+    flushLists(`${i}`);
+    blocks.push(<p key={`p-${i}`}>{renderInline(line, `p-${i}`)}</p>);
+  }
+
+  flushLists("end");
   return <div className="answer-body">{blocks}</div>;
 }
